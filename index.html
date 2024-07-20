@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+</head>
+
+<body bgcolor="white">
+
+    <div class="stopwatch">
+        <div class="time" id="display">00:00:00</div>
+        <div class="buttons">
+            <iconify-icon  id="start" class="icons" icon="fluent-emoji:stop-sign"></iconify-icon>
+            <iconify-icon id="pause" class="icons" width="50px"  icon="emojione:play-button"></iconify-icon>
+            <iconify-icon id="reset" class="icons" icon="icon-park:refresh"></iconify-icon>
+        </div>
+    </div>
+
+    <script>
+        let startTime, updatedTime, difference, tInterval, savedTime;
+        let running = false;
+
+        function startTimer() {
+            if (!running) {
+                startTime = new Date().getTime();
+                tInterval = setInterval(getShowTime, 1);
+                running = true;
+            }
+        }
+
+        function pauseTimer() {
+            if (running) {
+                clearInterval(tInterval);
+                savedTime = difference;
+                running = false;
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(tInterval);
+            savedTime = 0;
+            difference = 0;
+            running = false;
+            document.getElementById('display').innerHTML = '00:00:00';
+        }
+
+        function getShowTime() {
+            updatedTime = new Date().getTime();
+            if (savedTime) {
+                difference = (updatedTime - startTime) + savedTime;
+            } else {
+                difference = updatedTime - startTime;
+            }
+            let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            let milliseconds = Math.floor((difference % 1000) / 10);
+
+            document.getElementById('display').innerHTML =
+                (hours > 9 ? hours : '0' + hours) + ':' +
+                (minutes > 9 ? minutes : '0' + minutes) + ':' +
+                (seconds > 9 ? seconds : '0' + seconds) + ':' +
+                (milliseconds > 9 ? milliseconds : '0' + milliseconds);
+        }
+
+        document.getElementById('start').addEventListener('click', startTimer);
+        document.getElementById('pause').addEventListener('click', pauseTimer);
+        document.getElementById('reset').addEventListener('click', resetTimer);
+    </script>
+</body>
+
+</html>
